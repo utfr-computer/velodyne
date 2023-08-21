@@ -38,10 +38,9 @@
 
 #include <velodyne_pointcloud/calibration.hpp>
 
-using namespace velodyne_pointcloud;  // NOLINT
+using namespace velodyne_pointcloud; // NOLINT
 
-std::string get_package_path()
-{
+std::string get_package_path() {
   std::string g_package_name("velodyne_pointcloud");
   return ament_index_cpp::get_package_share_directory(g_package_name);
 }
@@ -50,16 +49,12 @@ std::string get_package_path()
 // Test cases
 ///////////////////////////////////////////////////////////////
 
-TEST(Calibration, missing_file)
-{
-  EXPECT_THROW(
-    {Calibration calibration("/no_such_file.yaml");},
-    std::runtime_error
-  );
+TEST(Calibration, missing_file) {
+  EXPECT_THROW({ Calibration calibration("/no_such_file.yaml"); },
+               std::runtime_error);
 }
 
-TEST(Calibration, vlp16)
-{
+TEST(Calibration, vlp16) {
   Calibration calibration(get_package_path() + "/params/VLP16db.yaml");
   ASSERT_EQ(calibration.num_lasers, 16);
 
@@ -80,8 +75,7 @@ TEST(Calibration, vlp16)
   EXPECT_EQ(laser.min_intensity, 0);
 }
 
-TEST(Calibration, hdl32e)
-{
+TEST(Calibration, hdl32e) {
   Calibration calibration(get_package_path() + "/params/32db.yaml");
   ASSERT_EQ(calibration.num_lasers, 32);
 
@@ -102,8 +96,7 @@ TEST(Calibration, hdl32e)
   EXPECT_EQ(laser.min_intensity, 0);
 }
 
-TEST(Calibration, hdl64e)
-{
+TEST(Calibration, hdl64e) {
   Calibration calibration(get_package_path() + "/params/64e_utexas.yaml");
   ASSERT_EQ(calibration.num_lasers, 64);
 
@@ -124,8 +117,7 @@ TEST(Calibration, hdl64e)
   EXPECT_EQ(laser.min_intensity, 0);
 }
 
-TEST(Calibration, hdl64e_s21)
-{
+TEST(Calibration, hdl64e_s21) {
   Calibration calibration(get_package_path() + "/params/64e_s2.1-sztaki.yaml");
   ASSERT_EQ(calibration.num_lasers, 64);
 
@@ -146,9 +138,9 @@ TEST(Calibration, hdl64e_s21)
   EXPECT_EQ(laser.min_intensity, 0);
 }
 
-TEST(Calibration, hdl64e_s2_float_intensities)
-{
-  Calibration calibration(get_package_path() + "/params/issue_84_float_intensities.yaml");
+TEST(Calibration, hdl64e_s2_float_intensities) {
+  Calibration calibration(get_package_path() +
+                          "/params/issue_84_float_intensities.yaml");
   ASSERT_EQ(calibration.num_lasers, 64);
 
   // check some values for the first laser:

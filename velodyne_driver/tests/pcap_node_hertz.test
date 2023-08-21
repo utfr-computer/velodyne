@@ -8,8 +8,7 @@
     <param name="pcap" value="$(find velodyne_driver)/tests/class.pcap"/>
   </node>
 
-  <test test-name="pcap_node_hertz_test" pkg="rostest"
-        type="hztest" name="hztest_packets_node_64e" >
+  <test test-name="pcap_node_hertz_test" pkg="rostest" type="hztest" name="hztest_packets_node_64e">
     <param name="hz" value="10.0" />
     <param name="hzerror" value="3.0" />
     <param name="test_duration" value="5.0" />
@@ -17,8 +16,7 @@
     <param name="wait_time" value="2.0" />
   </test>
 
-  <test test-name="node_diagnostics_test"
-        pkg="rostest" type="hztest" name="hztest_diag_node_64e">
+  <test test-name="node_diagnostics_test" pkg="rostest" type="hztest" name="hztest_diag_node_64e">
     <param name="hz" value="1.0" />
     <param name="hzerror" value="0.5" />
     <param name="test_duration" value="5.0" />

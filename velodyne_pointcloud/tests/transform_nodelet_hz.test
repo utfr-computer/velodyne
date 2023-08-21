@@ -22,8 +22,7 @@
        transformed clouds run very slowly, they spend too much time
        waiting for the /velodyne to /map transform to be available.
   -->
-  <test test-name="transform_nodelet_hz_test" pkg="rostest"
-        type="hztest" name="hztest_transform_nodelet_64e" >
+  <test test-name="transform_nodelet_hz_test" pkg="rostest" type="hztest" name="hztest_transform_nodelet_64e">
     <param name="hz" value="10.0" />
     <param name="hzerror" value="7.0" />
     <param name="test_duration" value="5.0" />

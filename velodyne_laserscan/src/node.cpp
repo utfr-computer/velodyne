@@ -36,13 +36,11 @@
 
 #include "velodyne_laserscan/velodyne_laserscan.hpp"
 
-int main(int argc, char ** argv)
-{
+int main(int argc, char **argv) {
   rclcpp::init(argc, argv);
 
   // handle callbacks until shut down
-  rclcpp::spin(
-    std::make_shared<velodyne_laserscan::VelodyneLaserScan>(
+  rclcpp::spin(std::make_shared<velodyne_laserscan::VelodyneLaserScan>(
       rclcpp::NodeOptions()));
 
   rclcpp::shutdown();

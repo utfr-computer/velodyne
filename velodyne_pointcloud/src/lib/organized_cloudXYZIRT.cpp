@@ -41,30 +41,28 @@
 
 #include "velodyne_pointcloud/organized_cloudXYZIRT.hpp"
 
-namespace velodyne_pointcloud
-{
+namespace velodyne_pointcloud {
 
-OrganizedCloudXYZIRT::OrganizedCloudXYZIRT(
-  const double min_range, const double max_range,
-  const std::string & target_frame, const std::string & fixed_frame,
-  const unsigned int num_lasers, const unsigned int scans_per_block,
-  rclcpp::Clock::SharedPtr clock)
-: DataContainerBase(
-    min_range, max_range, target_frame, fixed_frame,
-    num_lasers, 0, false, scans_per_block, clock, 6,
-    "x", 1, sensor_msgs::msg::PointField::FLOAT32,
-    "y", 1, sensor_msgs::msg::PointField::FLOAT32,
-    "z", 1, sensor_msgs::msg::PointField::FLOAT32,
-    "intensity", 1, sensor_msgs::msg::PointField::FLOAT32,
-    "ring", 1, sensor_msgs::msg::PointField::UINT16,
-    "time", 1, sensor_msgs::msg::PointField::FLOAT32),
-  iter_x_(cloud, "x"), iter_y_(cloud, "y"), iter_z_(cloud, "z"),
-  iter_intensity_(cloud, "intensity"), iter_ring_(cloud, "ring"), iter_time_(cloud, "time")
-{
-}
+OrganizedCloudXYZIRT::OrganizedCloudXYZIRT(const double min_range,
+                                           const double max_range,
+                                           const std::string &target_frame,
+                                           const std::string &fixed_frame,
+                                           const unsigned int num_lasers,
+                                           const unsigned int scans_per_block,
+                                           rclcpp::Clock::SharedPtr clock)
+    : DataContainerBase(min_range, max_range, target_frame, fixed_frame,
+                        num_lasers, 0, false, scans_per_block, clock, 6, "x", 1,
+                        sensor_msgs::msg::PointField::FLOAT32, "y", 1,
+                        sensor_msgs::msg::PointField::FLOAT32, "z", 1,
+                        sensor_msgs::msg::PointField::FLOAT32, "intensity", 1,
+                        sensor_msgs::msg::PointField::FLOAT32, "ring", 1,
+                        sensor_msgs::msg::PointField::UINT16, "time", 1,
+                        sensor_msgs::msg::PointField::FLOAT32),
+      iter_x_(cloud, "x"), iter_y_(cloud, "y"), iter_z_(cloud, "z"),
+      iter_intensity_(cloud, "intensity"), iter_ring_(cloud, "ring"),
+      iter_time_(cloud, "time") {}
 
-void OrganizedCloudXYZIRT::newLine()
-{
+void OrganizedCloudXYZIRT::newLine() {
   iter_x_ = iter_x_ + config_.init_width;
   iter_y_ = iter_y_ + config_.init_width;
   iter_z_ = iter_z_ + config_.init_width;
@@ -74,8 +72,8 @@ void OrganizedCloudXYZIRT::newLine()
   ++cloud.height;
 }
 
-void OrganizedCloudXYZIRT::setup(const velodyne_msgs::msg::VelodyneScan::ConstSharedPtr scan_msg)
-{
+void OrganizedCloudXYZIRT::setup(
+    const velodyne_msgs::msg::VelodyneScan::ConstSharedPtr scan_msg) {
   DataContainerBase::setup(scan_msg);
   iter_x_ = sensor_msgs::PointCloud2Iterator<float>(cloud, "x");
   iter_y_ = sensor_msgs::PointCloud2Iterator<float>(cloud, "y");
@@ -85,10 +83,9 @@ void OrganizedCloudXYZIRT::setup(const velodyne_msgs::msg::VelodyneScan::ConstSh
   iter_time_ = sensor_msgs::PointCloud2Iterator<float>(cloud, "time");
 }
 
-void OrganizedCloudXYZIRT::addPoint(
-  float x, float y, float z, const uint16_t ring,
-  const float distance, const float intensity, const float time)
-{
+void OrganizedCloudXYZIRT::addPoint(float x, float y, float z,
+                                    const uint16_t ring, const float distance,
+                                    const float intensity, const float time) {
   /** The laser values are not ordered, the organized structure
    * needs ordered neighbour points. The right order is defined
    * by the laser_ring value.
@@ -114,4 +111,4 @@ void OrganizedCloudXYZIRT::addPoint(
   }
 }
 
-}  // namespace velodyne_pointcloud
+} // namespace velodyne_pointcloud

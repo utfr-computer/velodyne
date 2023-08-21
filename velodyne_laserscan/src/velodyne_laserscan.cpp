@@ -47,12 +47,10 @@
 #include <sensor_msgs/msg/point_field.hpp>
 #include <sensor_msgs/point_cloud2_iterator.hpp>
 
-namespace velodyne_laserscan
-{
+namespace velodyne_laserscan {
 
-VelodyneLaserScan::VelodyneLaserScan(const rclcpp::NodeOptions & options)
-: rclcpp::Node("velodyne_laserscan_node", options)
-{
+VelodyneLaserScan::VelodyneLaserScan(const rclcpp::NodeOptions &options)
+    : rclcpp::Node("velodyne_laserscan_node", options) {
   rcl_interfaces::msg::ParameterDescriptor ring_desc;
   ring_desc.name = "ring";
   ring_desc.type = rcl_interfaces::msg::ParameterType::PARAMETER_INTEGER;
@@ -74,13 +72,13 @@ VelodyneLaserScan::VelodyneLaserScan(const rclcpp::NodeOptions & options)
   resolution_ = declare_parameter("resolution", 0.007, resolution_desc);
 
   sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-    "velodyne_points", rclcpp::QoS(10),
-    std::bind(&VelodyneLaserScan::recvCallback, this, std::placeholders::_1));
+      "velodyne_points", rclcpp::QoS(10),
+      std::bind(&VelodyneLaserScan::recvCallback, this, std::placeholders::_1));
   pub_ = this->create_publisher<sensor_msgs::msg::LaserScan>("scan", 10);
 }
 
-void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
-{
+void VelodyneLaserScan::recvCallback(
+    const sensor_msgs::msg::PointCloud2::SharedPtr msg) {
   // Latch ring count
   if (!ring_count_) {
     // Check for PointCloud2 field 'ring'
@@ -95,11 +93,13 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
     }
 
     if (!found) {
-      RCLCPP_ERROR(this->get_logger(), "Field 'ring' of type 'UINT16' not present in PointCloud2");
+      RCLCPP_ERROR(this->get_logger(),
+                   "Field 'ring' of type 'UINT16' not present in PointCloud2");
       return;
     }
 
-    for (sensor_msgs::PointCloud2ConstIterator<uint16_t> it(*msg, "ring"); it != it.end(); ++it) {
+    for (sensor_msgs::PointCloud2ConstIterator<uint16_t> it(*msg, "ring");
+         it != it.end(); ++it) {
       const uint16_t ring = *it;
 
       if (ring + 1 > ring_count_) {
@@ -110,7 +110,8 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
     if (ring_count_) {
       RCLCPP_INFO(this->get_logger(), "Latched ring count of %u", ring_count_);
     } else {
-      RCLCPP_ERROR(this->get_logger(), "Field 'ring' of type 'UINT16' not present in PointCloud2");
+      RCLCPP_ERROR(this->get_logger(),
+                   "Field 'ring' of type 'UINT16' not present in PointCloud2");
       return;
     }
   }
@@ -121,11 +122,11 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
   if ((ring_ < 0) || (ring_ >= ring_count_)) {
     // Default to ring closest to being level for each known sensor
     if (ring_count_ > 32) {
-      ring = 57;  // HDL-64E
+      ring = 57; // HDL-64E
     } else if (ring_count_ > 16) {
-      ring = 23;  // HDL-32E
+      ring = 23; // HDL-32E
     } else {
-      ring = 8;  // VLP-16
+      ring = 8; // VLP-16
     }
   } else {
     ring = ring_;
@@ -149,7 +150,8 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
       } else if (msg->fields[i].name == "intensity") {
         offset_i = msg->fields[i].offset;
       }
-    } else if (msg->fields[i].datatype == sensor_msgs::msg::PointField::UINT16) {
+    } else if (msg->fields[i].datatype ==
+               sensor_msgs::msg::PointField::UINT16) {
       if (msg->fields[i].name == "ring") {
         offset_r = msg->fields[i].offset;
       }
@@ -172,30 +174,30 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
     scan->time_increment = 0.0;
     scan->ranges.resize(kSize, INFINITY);
 
-    if ((offset_x == 0) &&
-      (offset_y == 4) &&
-      (offset_i % 4 == 0) &&
-      (offset_r % 4 == 0))
-    {
+    if ((offset_x == 0) && (offset_y == 4) && (offset_i % 4 == 0) &&
+        (offset_r % 4 == 0)) {
       scan->intensities.resize(kSize);
 
       const size_t X = 0;
       const size_t Y = 1;
       const size_t I = offset_i / 4;
       const size_t R = offset_r / 4;
-      for (sensor_msgs::PointCloud2ConstIterator<float> it(*msg, "x"); it != it.end(); ++it) {
-        // Field "ring" is of UINT16 type, 2 bytes long. But this loop's iterator assumes FLOAT32
-        // type fields, 4 bytes long. Thus, de-referencing it (even) at the right offset will
-        // only yield "ring" field bytes, plus 2 bytes right after it, interpreted as a float
-        // value. We can, however, re-interpret that float value binary representation as that
-        // of an unsigned integer, 16 bit long.
+      for (sensor_msgs::PointCloud2ConstIterator<float> it(*msg, "x");
+           it != it.end(); ++it) {
+        // Field "ring" is of UINT16 type, 2 bytes long. But this loop's
+        // iterator assumes FLOAT32 type fields, 4 bytes long. Thus,
+        // de-referencing it (even) at the right offset will only yield "ring"
+        // field bytes, plus 2 bytes right after it, interpreted as a float
+        // value. We can, however, re-interpret that float value binary
+        // representation as that of an unsigned integer, 16 bit long.
         const uint16_t r = *(reinterpret_cast<const uint16_t *>(&it[R]));
 
         if (r == ring) {
-          const float x = it[X];  // x
-          const float y = it[Y];  // y
-          const float i = it[I];  // intensity
-          const int bin = (::atan2f(y, x) + static_cast<float>(M_PI)) / kResolution;
+          const float x = it[X]; // x
+          const float y = it[Y]; // y
+          const float i = it[I]; // intensity
+          const int bin =
+              (::atan2f(y, x) + static_cast<float>(M_PI)) / kResolution;
 
           if ((bin >= 0) && (bin < static_cast<int>(kSize))) {
             scan->ranges[bin] = ::sqrtf(x * x + y * y);
@@ -204,9 +206,8 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
         }
       }
     } else {
-      RCLCPP_WARN_ONCE(
-        get_logger(),
-        "PointCloud2 fields in unexpected order. Using slower generic method.");
+      RCLCPP_WARN_ONCE(get_logger(), "PointCloud2 fields in unexpected order. "
+                                     "Using slower generic method.");
 
       if (offset_i >= 0) {
         scan->intensities.resize(kSize);
@@ -216,13 +217,14 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
         sensor_msgs::PointCloud2ConstIterator<float> iter_i(*msg, "intensity");
 
         for (; iter_r != iter_r.end(); ++iter_x, ++iter_y, ++iter_r, ++iter_i) {
-          const uint16_t r = *iter_r;  // ring
+          const uint16_t r = *iter_r; // ring
 
           if (r == ring) {
-            const float x = *iter_x;  // x
-            const float y = *iter_y;  // y
-            const float i = *iter_i;  // intensity
-            const int bin = (::atan2f(y, x) + static_cast<float>(M_PI)) / kResolution;
+            const float x = *iter_x; // x
+            const float y = *iter_y; // y
+            const float i = *iter_i; // intensity
+            const int bin =
+                (::atan2f(y, x) + static_cast<float>(M_PI)) / kResolution;
 
             if ((bin >= 0) && (bin < static_cast<int>(kSize))) {
               scan->ranges[bin] = ::sqrtf(x * x + y * y);
@@ -236,12 +238,13 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
         sensor_msgs::PointCloud2ConstIterator<float> iter_y(*msg, "y");
 
         for (; iter_r != iter_r.end(); ++iter_x, ++iter_y, ++iter_r) {
-          const uint16_t r = *iter_r;  // ring
+          const uint16_t r = *iter_r; // ring
 
           if (r == ring) {
-            const float x = *iter_x;  // x
-            const float y = *iter_y;  // y
-            const int bin = (::atan2f(y, x) + static_cast<float>(M_PI)) / kResolution;
+            const float x = *iter_x; // x
+            const float y = *iter_y; // y
+            const int bin =
+                (::atan2f(y, x) + static_cast<float>(M_PI)) / kResolution;
 
             if ((bin >= 0) && (bin < static_cast<int>(kSize))) {
               scan->ranges[bin] = ::sqrtf(x * x + y * y);
@@ -253,12 +256,11 @@ void VelodyneLaserScan::recvCallback(const sensor_msgs::msg::PointCloud2::Shared
 
     pub_->publish(std::move(scan));
   } else {
-    RCLCPP_ERROR(
-      this->get_logger(),
-      "PointCloud2 missing one or more required fields! (x,y,ring)");
+    RCLCPP_ERROR(this->get_logger(),
+                 "PointCloud2 missing one or more required fields! (x,y,ring)");
   }
 }
 
-}  // namespace velodyne_laserscan
+} // namespace velodyne_laserscan
 
 RCLCPP_COMPONENTS_REGISTER_NODE(velodyne_laserscan::VelodyneLaserScan)

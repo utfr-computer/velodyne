@@ -14,8 +14,7 @@
     </include>
 
     <!-- verify PointCloud2 publication rate -->
-    <test test-name="multi_nodelet_32e_test" pkg="rostest"
-          type="hztest" name="hztest_multi_nodelet_32e" >
+    <test test-name="multi_nodelet_32e_test" pkg="rostest" type="hztest" name="hztest_multi_nodelet_32e">
       <param name="hz" value="10.0" />
       <param name="hzerror" value="3.0" />
       <param name="test_duration" value="5.0" />
@@ -34,8 +33,7 @@
     </include>
 
     <!-- verify PointCloud2 publication rate -->
-    <test test-name="multi_nodelet_vlp16_test" pkg="rostest"
-          type="hztest" name="hztest_multi_nodelet_vlp16" >
+    <test test-name="multi_nodelet_vlp16_test" pkg="rostest" type="hztest" name="hztest_multi_nodelet_vlp16">
       <param name="hz" value="10.0" />
       <param name="hzerror" value="3.0" />
       <param name="test_duration" value="5.0" />

@@ -41,20 +41,25 @@ import launch_ros.actions
 
 def generate_launch_description():
     config_directory = os.path.join(
-        ament_index_python.packages.get_package_share_directory('velodyne_driver'),
-        'config')
-    params = os.path.join(config_directory, 'VLP32C-velodyne_driver_node-params.yaml')
-    velodyne_driver_node = launch_ros.actions.Node(package='velodyne_driver',
-                                                   executable='velodyne_driver_node',
-                                                   output='both',
-                                                   parameters=[params])
+        ament_index_python.packages.get_package_share_directory("velodyne_driver"),
+        "config",
+    )
+    params = os.path.join(config_directory, "VLP32C-velodyne_driver_node-params.yaml")
+    velodyne_driver_node = launch_ros.actions.Node(
+        package="velodyne_driver",
+        executable="velodyne_driver_node",
+        output="both",
+        parameters=[params],
+    )
 
-    return launch.LaunchDescription([velodyne_driver_node,
-
-                                     launch.actions.RegisterEventHandler(
-                                         event_handler=launch.event_handlers.OnProcessExit(
-                                             target_action=velodyne_driver_node,
-                                             on_exit=[launch.actions.EmitEvent(
-                                                 event=launch.events.Shutdown())],
-                                         )),
-                                     ])
+    return launch.LaunchDescription(
+        [
+            velodyne_driver_node,
+            launch.actions.RegisterEventHandler(
+                event_handler=launch.event_handlers.OnProcessExit(
+                    target_action=velodyne_driver_node,
+                    on_exit=[launch.actions.EmitEvent(event=launch.events.Shutdown())],
+                )
+            ),
+        ]
+    )

@@ -1,5 +1,5 @@
-// Copyright 2009, 2010, 2011, 2012, 2019 Austin Robot Technology, Jack O'Quin, Jesse Vera, Sebastian Pütz, Joshua Whitley  // NOLINT
-// All rights reserved.
+// Copyright 2009, 2010, 2011, 2012, 2019 Austin Robot Technology, Jack O'Quin,
+// Jesse Vera, Sebastian Pütz, Joshua Whitley  // NOLINT All rights reserved.
 //
 // Software License Agreement (BSD License 2.0)
 //
@@ -49,13 +49,10 @@
 #include "velodyne_pointcloud/pointcloudXYZIRT.hpp"
 #include "velodyne_pointcloud/rawdata.hpp"
 
-namespace velodyne_pointcloud
-{
+namespace velodyne_pointcloud {
 
-Transform::Transform(const rclcpp::NodeOptions & options)
-: rclcpp::Node("velodyne_transform_node", options),
-  diagnostics_(this)
-{
+Transform::Transform(const rclcpp::NodeOptions &options)
+    : rclcpp::Node("velodyne_transform_node", options), diagnostics_(this) {
   std::string calibration_file = this->declare_parameter("calibration", "");
   const auto model = this->declare_parameter("model", "64E");
 
@@ -77,17 +74,20 @@ Transform::Transform(const rclcpp::NodeOptions & options)
   max_range_range.from_value = 0.1;
   max_range_range.to_value = 300.0;
   max_range_desc.floating_point_range.push_back(max_range_range);
-  double max_range = this->declare_parameter("max_range", 130.0, max_range_desc);
+  double max_range =
+      this->declare_parameter("max_range", 130.0, max_range_desc);
 
   rcl_interfaces::msg::ParameterDescriptor view_direction_desc;
   view_direction_desc.name = "view_direction";
-  view_direction_desc.type = rcl_interfaces::msg::ParameterType::PARAMETER_DOUBLE;
+  view_direction_desc.type =
+      rcl_interfaces::msg::ParameterType::PARAMETER_DOUBLE;
   view_direction_desc.description = "angle defining the center of view";
   rcl_interfaces::msg::FloatingPointRange view_direction_range;
   view_direction_range.from_value = -M_PI;
   view_direction_range.to_value = M_PI;
   view_direction_desc.floating_point_range.push_back(view_direction_range);
-  double view_direction = this->declare_parameter("view_direction", 0.0, view_direction_desc);
+  double view_direction =
+      this->declare_parameter("view_direction", 0.0, view_direction_desc);
 
   rcl_interfaces::msg::ParameterDescriptor view_width_desc;
   view_width_desc.name = "view_width";
@@ -97,31 +97,35 @@ Transform::Transform(const rclcpp::NodeOptions & options)
   view_width_range.from_value = 0.0;
   view_width_range.to_value = 2.0 * M_PI;
   view_width_desc.floating_point_range.push_back(view_width_range);
-  double view_width = this->declare_parameter("view_width", 2.0 * M_PI, view_width_desc);
+  double view_width =
+      this->declare_parameter("view_width", 2.0 * M_PI, view_width_desc);
 
   std::string fixed_frame = this->declare_parameter("fixed_frame", "");
   std::string target_frame = this->declare_parameter("target_frame", "");
   bool organize_cloud = this->declare_parameter("organize_cloud", true);
 
-  RCLCPP_INFO(this->get_logger(), "correction angles: %s", calibration_file.c_str());
+  RCLCPP_INFO(this->get_logger(), "correction angles: %s",
+              calibration_file.c_str());
 
   data_ = std::make_unique<velodyne_rawdata::RawData>(calibration_file, model);
 
   if (organize_cloud) {
     container_ptr_ = std::make_unique<OrganizedCloudXYZIRT>(
-      min_range, max_range, target_frame, fixed_frame, data_->numLasers(),
-      data_->scansPerPacket(), this->get_clock());
+        min_range, max_range, target_frame, fixed_frame, data_->numLasers(),
+        data_->scansPerPacket(), this->get_clock());
   } else {
     container_ptr_ = std::make_unique<PointcloudXYZIRT>(
-      min_range, max_range, target_frame, fixed_frame,
-      data_->scansPerPacket(), this->get_clock());
+        min_range, max_range, target_frame, fixed_frame,
+        data_->scansPerPacket(), this->get_clock());
   }
 
   // advertise output point cloud (before subscribing to input data)
-  output_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("velodyne_points", 10);
+  output_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(
+      "velodyne_points", 10);
 
   velodyne_scan_ = this->create_subscription<velodyne_msgs::msg::VelodyneScan>(
-    "velodyne_packets", 10, std::bind(&Transform::processScan, this, std::placeholders::_1));
+      "velodyne_packets", 10,
+      std::bind(&Transform::processScan, this, std::placeholders::_1));
 
   // Diagnostics
   diagnostics_.setHardwareID("Velodyne Transform");
@@ -130,9 +134,10 @@ Transform::Transform(const rclcpp::NodeOptions & options)
   diag_min_freq_ = 2.0;
   diag_max_freq_ = 20.0;
   diag_topic_ = std::make_unique<diagnostic_updater::TopicDiagnostic>(
-    "velodyne_points", diagnostics_, diagnostic_updater::FrequencyStatusParam(
-      &diag_min_freq_, &diag_max_freq_, 0.1, 10),
-    diagnostic_updater::TimeStampStatusParam());
+      "velodyne_points", diagnostics_,
+      diagnostic_updater::FrequencyStatusParam(&diag_min_freq_, &diag_max_freq_,
+                                               0.1, 10),
+      diagnostic_updater::TimeStampStatusParam());
 
   data_->setParameters(min_range, max_range, view_direction, view_width);
   container_ptr_->configure(min_range, max_range, target_frame, fixed_frame);
@@ -144,10 +149,9 @@ Transform::Transform(const rclcpp::NodeOptions & options)
  *       the configured @c frame_id can succeed.
  */
 void Transform::processScan(
-  const velodyne_msgs::msg::VelodyneScan::ConstSharedPtr scanMsg)
-{
+    const velodyne_msgs::msg::VelodyneScan::ConstSharedPtr scanMsg) {
   if (output_->get_subscription_count() == 0 &&
-    output_->get_intra_process_subscription_count() == 0)    // no one listening?
+      output_->get_intra_process_subscription_count() == 0) // no one listening?
   {
     return;
   }
@@ -176,6 +180,6 @@ void Transform::processScan(
   diag_topic_->tick(scanMsg->header.stamp);
 }
 
-}  // namespace velodyne_pointcloud
+} // namespace velodyne_pointcloud
 
 RCLCPP_COMPONENTS_REGISTER_NODE(velodyne_pointcloud::Transform)

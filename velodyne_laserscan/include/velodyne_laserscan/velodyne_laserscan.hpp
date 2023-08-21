@@ -37,19 +37,16 @@
 #include <sensor_msgs/msg/laser_scan.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 
-namespace velodyne_laserscan
-{
+namespace velodyne_laserscan {
 
-class VelodyneLaserScan final
-  : public rclcpp::Node
-{
+class VelodyneLaserScan final : public rclcpp::Node {
 public:
-  explicit VelodyneLaserScan(const rclcpp::NodeOptions & options);
+  explicit VelodyneLaserScan(const rclcpp::NodeOptions &options);
   ~VelodyneLaserScan() override {}
-  VelodyneLaserScan(VelodyneLaserScan && c) = delete;
-  VelodyneLaserScan & operator=(VelodyneLaserScan && c) = delete;
-  VelodyneLaserScan(const VelodyneLaserScan & c) = delete;
-  VelodyneLaserScan & operator=(const VelodyneLaserScan & c) = delete;
+  VelodyneLaserScan(VelodyneLaserScan &&c) = delete;
+  VelodyneLaserScan &operator=(VelodyneLaserScan &&c) = delete;
+  VelodyneLaserScan(const VelodyneLaserScan &c) = delete;
+  VelodyneLaserScan &operator=(const VelodyneLaserScan &c) = delete;
 
 private:
   void recvCallback(const sensor_msgs::msg::PointCloud2::SharedPtr msg);
@@ -62,6 +59,6 @@ private:
   double resolution_;
 };
 
-}  // namespace velodyne_laserscan
+} // namespace velodyne_laserscan
 
-#endif  // VELODYNE_LASERSCAN__VELODYNE_LASERSCAN_HPP_
+#endif // VELODYNE_LASERSCAN__VELODYNE_LASERSCAN_HPP_

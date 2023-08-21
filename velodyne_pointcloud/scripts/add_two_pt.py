@@ -46,7 +46,7 @@ import sys
 import yaml
 
 calibration = yaml.safe_load(sys.stdin)
-for laser in calibration['lasers']:
-    laser['two_pt_correction_available'] = True
+for laser in calibration["lasers"]:
+    laser["two_pt_correction_available"] = True
 
 print(yaml.safe_dump(calibration))

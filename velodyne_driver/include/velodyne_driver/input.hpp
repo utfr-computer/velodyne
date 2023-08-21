@@ -1,5 +1,6 @@
-// Copyright 2007, 2009, 2010, 2012, 2015, 2019 Yaxin Liu, Patrick Beeson, Austin Robot Technology, Jack O'Quin, AutonomouStuff  // NOLINT
-// All rights reserved.
+// Copyright 2007, 2009, 2010, 2012, 2015, 2019 Yaxin Liu, Patrick Beeson,
+// Austin Robot Technology, Jack O'Quin, AutonomouStuff  // NOLINT All rights
+// reserved.
 //
 // Software License Agreement (BSD License 2.0)
 //
@@ -63,16 +64,15 @@
 #include <velodyne_msgs/msg/velodyne_packet.hpp>
 #include <velodyne_msgs/msg/velodyne_scan.hpp>
 
-namespace velodyne_driver
-{
+namespace velodyne_driver {
 
-constexpr uint16_t DATA_PORT_NUMBER = 2368;      // default data port
+constexpr uint16_t DATA_PORT_NUMBER = 2368; // default data port
 
 /** @brief Velodyne input base class */
-class Input
-{
+class Input {
 public:
-  explicit Input(rclcpp::Node * private_nh, const std::string & devip, uint16_t port);
+  explicit Input(rclcpp::Node *private_nh, const std::string &devip,
+                 uint16_t port);
   virtual ~Input() {}
 
   /** @brief Read one Velodyne packet.
@@ -83,29 +83,25 @@ public:
    *          -1 if end of file
    *          > 0 if incomplete packet (is this possible?)
    */
-  virtual int getPacket(
-    velodyne_msgs::msg::VelodynePacket * pkt,
-    const double time_offset) = 0;
+  virtual int getPacket(velodyne_msgs::msg::VelodynePacket *pkt,
+                        const double time_offset) = 0;
 
 protected:
-  rclcpp::Node * private_nh_;
+  rclcpp::Node *private_nh_;
   std::string devip_str_;
   uint16_t port_;
 };
 
 /** @brief Live Velodyne input from socket. */
-class InputSocket final : public Input
-{
+class InputSocket final : public Input {
 public:
-  explicit InputSocket(
-    rclcpp::Node * private_nh,
-    const std::string & devip, uint16_t port, bool gps_time);
+  explicit InputSocket(rclcpp::Node *private_nh, const std::string &devip,
+                       uint16_t port, bool gps_time);
   ~InputSocket() override;
 
-  int getPacket(
-    velodyne_msgs::msg::VelodynePacket * pkt,
-    const double time_offset) override;
-  void setDeviceIP(const std::string & ip);
+  int getPacket(velodyne_msgs::msg::VelodynePacket *pkt,
+                const double time_offset) override;
+  void setDeviceIP(const std::string &ip);
 
 private:
   int sockfd_;
@@ -113,35 +109,27 @@ private:
   bool gps_time_;
 };
 
-
 /** @brief Velodyne input from PCAP dump file.
  *
  * Dump files can be grabbed by libpcap, Velodyne's DSR software,
  * ethereal, wireshark, tcpdump, or the \ref vdump_command.
  */
-class InputPCAP final : public Input
-{
+class InputPCAP final : public Input {
 public:
-  explicit InputPCAP(
-    rclcpp::Node * private_nh,
-    const std::string & devip,
-    uint16_t port,
-    double packet_rate,
-    const std::string & filename,
-    bool read_once,
-    bool read_fast,
-    double repeat_delay);
+  explicit InputPCAP(rclcpp::Node *private_nh, const std::string &devip,
+                     uint16_t port, double packet_rate,
+                     const std::string &filename, bool read_once,
+                     bool read_fast, double repeat_delay);
   ~InputPCAP() override;
 
-  int getPacket(
-    velodyne_msgs::msg::VelodynePacket * pkt,
-    const double time_offset) override;
-  void setDeviceIP(const std::string & ip);
+  int getPacket(velodyne_msgs::msg::VelodynePacket *pkt,
+                const double time_offset) override;
+  void setDeviceIP(const std::string &ip);
 
 private:
   rclcpp::Rate packet_rate_;
   std::string filename_;
-  pcap_t * pcap_;
+  pcap_t *pcap_;
   bpf_program pcap_packet_filter_{};
   char errbuf_[PCAP_ERRBUF_SIZE]{};
   bool empty_;
@@ -150,6 +138,6 @@ private:
   double repeat_delay_;
 };
 
-}  // namespace velodyne_driver
+} // namespace velodyne_driver
 
-#endif  // VELODYNE_DRIVER__INPUT_HPP_
+#endif // VELODYNE_DRIVER__INPUT_HPP_

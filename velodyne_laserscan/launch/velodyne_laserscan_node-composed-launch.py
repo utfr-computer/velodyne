@@ -44,23 +44,28 @@ import yaml
 
 
 def generate_launch_description():
-    share_dir = ament_index_python.packages.get_package_share_directory('velodyne_laserscan')
-    params_file = os.path.join(share_dir, 'config', 'default-velodyne_laserscan_node-params.yaml')
-    with open(params_file, 'r') as f:
-        params = yaml.safe_load(f)['velodyne_laserscan_node']['ros__parameters']
+    share_dir = ament_index_python.packages.get_package_share_directory(
+        "velodyne_laserscan"
+    )
+    params_file = os.path.join(
+        share_dir, "config", "default-velodyne_laserscan_node-params.yaml"
+    )
+    with open(params_file, "r") as f:
+        params = yaml.safe_load(f)["velodyne_laserscan_node"]["ros__parameters"]
     container = ComposableNodeContainer(
-            name='velodyne_laserscan_container',
-            namespace='',
-            package='rclcpp_components',
-            executable='component_container',
-            composable_node_descriptions=[
-                ComposableNode(
-                    package='velodyne_laserscan',
-                    plugin='velodyne_laserscan::VelodyneLaserScan',
-                    name='velodyne_laserscan_node',
-                    parameters=[params]),
-            ],
-            output='both',
+        name="velodyne_laserscan_container",
+        namespace="",
+        package="rclcpp_components",
+        executable="component_container",
+        composable_node_descriptions=[
+            ComposableNode(
+                package="velodyne_laserscan",
+                plugin="velodyne_laserscan::VelodyneLaserScan",
+                name="velodyne_laserscan_node",
+                parameters=[params],
+            ),
+        ],
+        output="both",
     )
 
     return LaunchDescription([container])

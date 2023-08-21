@@ -1,5 +1,5 @@
-// Copyright 2009, 2010, 2011, 2012, 2019 Austin Robot Technology, Jack O'Quin, Jesse Vera, Joshua Whitley, Sebastian Pütz  // NOLINT
-// All rights reserved.
+// Copyright 2009, 2010, 2011, 2012, 2019 Austin Robot Technology, Jack O'Quin,
+// Jesse Vera, Joshua Whitley, Sebastian Pütz  // NOLINT All rights reserved.
 //
 // Software License Agreement (BSD License 2.0)
 //
@@ -50,25 +50,24 @@
 #include "velodyne_pointcloud/pointcloudXYZIRT.hpp"
 #include "velodyne_pointcloud/rawdata.hpp"
 
-namespace velodyne_pointcloud
-{
-class Transform final
-  : public rclcpp::Node
-{
+namespace velodyne_pointcloud {
+class Transform final : public rclcpp::Node {
 public:
-  explicit Transform(const rclcpp::NodeOptions & options);
+  explicit Transform(const rclcpp::NodeOptions &options);
   ~Transform() override {}
-  Transform(Transform && c) = delete;
-  Transform & operator=(Transform && c) = delete;
-  Transform(const Transform & c) = delete;
-  Transform & operator=(const Transform & c) = delete;
+  Transform(Transform &&c) = delete;
+  Transform &operator=(Transform &&c) = delete;
+  Transform(const Transform &c) = delete;
+  Transform &operator=(const Transform &c) = delete;
 
 private:
-  void processScan(const velodyne_msgs::msg::VelodyneScan::ConstSharedPtr scanMsg);
+  void
+  processScan(const velodyne_msgs::msg::VelodyneScan::ConstSharedPtr scanMsg);
 
   std::unique_ptr<velodyne_rawdata::RawData> data_;
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr output_;
-  rclcpp::Subscription<velodyne_msgs::msg::VelodyneScan>::SharedPtr velodyne_scan_;
+  rclcpp::Subscription<velodyne_msgs::msg::VelodyneScan>::SharedPtr
+      velodyne_scan_;
 
   std::unique_ptr<velodyne_rawdata::DataContainerBase> container_ptr_;
 
@@ -78,6 +77,6 @@ private:
   double diag_max_freq_;
   std::unique_ptr<diagnostic_updater::TopicDiagnostic> diag_topic_;
 };
-}  // namespace velodyne_pointcloud
+} // namespace velodyne_pointcloud
 
-#endif  // VELODYNE_POINTCLOUD__TRANSFORM_HPP_
+#endif // VELODYNE_POINTCLOUD__TRANSFORM_HPP_

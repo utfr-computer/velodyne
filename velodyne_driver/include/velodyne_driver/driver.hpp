@@ -43,18 +43,16 @@
 
 #include "velodyne_driver/input.hpp"
 
-namespace velodyne_driver
-{
+namespace velodyne_driver {
 
-class VelodyneDriver final : public rclcpp::Node
-{
+class VelodyneDriver final : public rclcpp::Node {
 public:
-  explicit VelodyneDriver(const rclcpp::NodeOptions & options);
+  explicit VelodyneDriver(const rclcpp::NodeOptions &options);
   ~VelodyneDriver() override;
-  VelodyneDriver(VelodyneDriver && c) = delete;
-  VelodyneDriver & operator=(VelodyneDriver && c) = delete;
-  VelodyneDriver(const VelodyneDriver & c) = delete;
-  VelodyneDriver & operator=(const VelodyneDriver & c) = delete;
+  VelodyneDriver(VelodyneDriver &&c) = delete;
+  VelodyneDriver &operator=(VelodyneDriver &&c) = delete;
+  VelodyneDriver(const VelodyneDriver &c) = delete;
+  VelodyneDriver &operator=(const VelodyneDriver &c) = delete;
 
 private:
   bool poll();
@@ -62,18 +60,17 @@ private:
   void pollThread();
 
   // configuration parameters
-  struct
-  {
-    std::string frame_id;            // tf frame ID
-    std::string model;               // device model name
-    int npackets;                    // number of packets to collect
-    double rpm;                      // device rotation rate (RPMs)
-    int cut_angle;                   // cutting angle in radians
-    double time_offset;              // time in seconds added to each velodyne time stamp
-    bool enabled;                    // polling is enabled
-    bool timestamp_first_packet;     // timestamp based on first packet instead of last one
-  }
-  config_;
+  struct {
+    std::string frame_id; // tf frame ID
+    std::string model;    // device model name
+    int npackets;         // number of packets to collect
+    double rpm;           // device rotation rate (RPMs)
+    int cut_angle;        // cutting angle in radians
+    double time_offset;   // time in seconds added to each velodyne time stamp
+    bool enabled;         // polling is enabled
+    bool timestamp_first_packet; // timestamp based on first packet instead of
+                                 // last one
+  } config_;
 
   std::unique_ptr<Input> input_;
   rclcpp::Publisher<velodyne_msgs::msg::VelodyneScan>::SharedPtr output_;
@@ -93,6 +90,6 @@ private:
   std::thread poll_thread_;
 };
 
-}  // namespace velodyne_driver
+} // namespace velodyne_driver
 
-#endif  // VELODYNE_DRIVER__DRIVER_HPP_
+#endif // VELODYNE_DRIVER__DRIVER_HPP_

@@ -10,8 +10,7 @@
   </include>
 
   <!-- verify PointCloud publication rate -->
-  <test test-name="pcap_32e_nodelet_hertz_test" pkg="rostest"
-        type="hztest" name="hztest_packets_nodelet_32e" >
+  <test test-name="pcap_32e_nodelet_hertz_test" pkg="rostest" type="hztest" name="hztest_packets_nodelet_32e">
     <param name="hz" value="10.0" />
     <param name="hzerror" value="3.0" />
     <param name="test_duration" value="5.0" />
@@ -19,8 +18,7 @@
     <param name="wait_time" value="2.0" />
   </test>
 
-  <test test-name="nodelet_diagnostics_test"
-        pkg="rostest" type="hztest" name="hztest_diag_nodelet_32e" >
+  <test test-name="nodelet_diagnostics_test" pkg="rostest" type="hztest" name="hztest_diag_nodelet_32e">
     <param name="hz" value="1.0" />
     <param name="hzerror" value="0.5" />
     <param name="test_duration" value="5.0" />

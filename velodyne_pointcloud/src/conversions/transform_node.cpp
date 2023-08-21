@@ -37,8 +37,7 @@
 #include "velodyne_pointcloud/transform.hpp"
 
 /** Main node entry point. */
-int main(int argc, char ** argv)
-{
+int main(int argc, char **argv) {
   // Force flush of the stdout buffer.
   setvbuf(stdout, nullptr, _IONBF, BUFSIZ);
 
@@ -46,8 +45,7 @@ int main(int argc, char ** argv)
 
   // handle callbacks until shut down
   rclcpp::spin(
-    std::make_shared<velodyne_pointcloud::Transform>(
-      rclcpp::NodeOptions()));
+      std::make_shared<velodyne_pointcloud::Transform>(rclcpp::NodeOptions()));
 
   rclcpp::shutdown();
 

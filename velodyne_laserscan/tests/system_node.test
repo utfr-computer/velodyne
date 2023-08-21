@@ -4,14 +4,14 @@
 <launch>
 
   <!-- Select log or screen output -->
-  <arg name="output" default="log"/> <!-- screen/log -->
+  <arg name="output" default="log"/>
+  <!-- screen/log -->
 
   <!-- Start the laserscan node -->
   <node pkg="velodyne_laserscan" type="velodyne_laserscan_node" name="laserscan" output="$(arg output)" />
 
   <!-- Start the rostest -->
-  <test test-name="test_system_node" pkg="velodyne_laserscan"
-        type="test_system_node" name="test_system">
+  <test test-name="test_system_node" pkg="velodyne_laserscan" type="test_system_node" name="test_system">
   </test>
 
 </launch>

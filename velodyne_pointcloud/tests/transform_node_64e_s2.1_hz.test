@@ -12,13 +12,11 @@
 
   <!-- start transform node with test calibration file -->
   <node pkg="velodyne_pointcloud" type="transform_node" name="transform_node">
-    <param name="calibration"
-           value="$(find velodyne_pointcloud)/params/64e_s2.1-sztaki.yaml"/>
+    <param name="calibration" value="$(find velodyne_pointcloud)/params/64e_s2.1-sztaki.yaml"/>
   </node>
 
   <!-- verify PointCloud2 publication rate -->
-  <test test-name="transform_node_64e_s21_hz_test" pkg="rostest"
-        type="hztest" name="hztest_transform_node_64e_s21" >
+  <test test-name="transform_node_64e_s21_hz_test" pkg="rostest" type="hztest" name="hztest_transform_node_64e_s21">
     <param name="hz" value="5.0" />
     <param name="hzerror" value="2.0" />
     <param name="test_duration" value="5.0" />

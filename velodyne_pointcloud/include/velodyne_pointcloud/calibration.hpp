@@ -1,5 +1,5 @@
-// Copyright 2012, 2019 Austin Robot Technology, Piyush Khandelwal, Joshua Whitley
-// All rights reserved.
+// Copyright 2012, 2019 Austin Robot Technology, Piyush Khandelwal, Joshua
+// Whitley All rights reserved.
 //
 // Software License Agreement (BSD License 2.0)
 //
@@ -37,8 +37,7 @@
 #include <string>
 #include <vector>
 
-namespace velodyne_pointcloud
-{
+namespace velodyne_pointcloud {
 
 /** \brief correction values for a single laser
  *
@@ -49,8 +48,7 @@ namespace velodyne_pointcloud
  */
 
 /** \brief Correction information for a single laser. */
-struct LaserCorrection
-{
+struct LaserCorrection {
   /** parameters in db.xml */
   float rot_correction;
   float vert_correction;
@@ -66,25 +64,24 @@ struct LaserCorrection
   float focal_slope;
 
   /** cached values calculated when the calibration file is read */
-  float cos_rot_correction;              ///< cosine of rot_correction
-  float sin_rot_correction;              ///< sine of rot_correction
-  float cos_vert_correction;             ///< cosine of vert_correction
-  float sin_vert_correction;             ///< sine of vert_correction
+  float cos_rot_correction;  ///< cosine of rot_correction
+  float sin_rot_correction;  ///< sine of rot_correction
+  float cos_vert_correction; ///< cosine of vert_correction
+  float sin_vert_correction; ///< sine of vert_correction
 
-  int laser_ring;                        ///< ring number for this laser
+  int laser_ring; ///< ring number for this laser
 };
 
 /** \brief Calibration information for the entire device. */
-class Calibration final
-{
+class Calibration final {
 public:
-  explicit Calibration(const std::string & calibration_file);
+  explicit Calibration(const std::string &calibration_file);
 
   float distance_resolution_m;
   std::vector<LaserCorrection> laser_corrections;
   int num_lasers{};
 };
 
-}  // namespace velodyne_pointcloud
+} // namespace velodyne_pointcloud
 
-#endif  // VELODYNE_POINTCLOUD__CALIBRATION_HPP_
+#endif // VELODYNE_POINTCLOUD__CALIBRATION_HPP_

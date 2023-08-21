@@ -1,5 +1,5 @@
-// Copyright 2012, 2019 Austin Robot Technology, Piyush Khandelwal, Joshua Whitley
-// All rights reserved.
+// Copyright 2012, 2019 Austin Robot Technology, Piyush Khandelwal, Joshua
+// Whitley All rights reserved.
 //
 // Software License Agreement (BSD License 2.0)
 //
@@ -46,23 +46,19 @@
 
 #ifdef HAVE_NEW_YAMLCPP
 
-namespace YAML
-{
+namespace YAML {
 
 // The >> operator disappeared in yaml-cpp 0.5, so this function is
 // added to provide support for code written under the yaml-cpp 0.3 API.
-template<typename T>
-void operator>>(const YAML::Node & node, T & i)
-{
+template <typename T> void operator>>(const YAML::Node &node, T &i) {
   i = node.as<T>();
 }
 
-}  // namespace YAML
+} // namespace YAML
 
-#endif  // HAVE_NEW_YAMLCPP
+#endif // HAVE_NEW_YAMLCPP
 
-namespace velodyne_pointcloud
-{
+namespace velodyne_pointcloud {
 
 constexpr char NUM_LASERS[] = "num_lasers";
 constexpr char DISTANCE_RESOLUTION[] = "distance_resolution";
@@ -71,8 +67,7 @@ constexpr char LASER_ID[] = "laser_id";
 constexpr char ROT_CORRECTION[] = "rot_correction";
 constexpr char VERT_CORRECTION[] = "vert_correction";
 constexpr char DIST_CORRECTION[] = "dist_correction";
-constexpr char TWO_PT_CORRECTION_AVAILABLE[] =
-  "two_pt_correction_available";
+constexpr char TWO_PT_CORRECTION_AVAILABLE[] = "two_pt_correction_available";
 constexpr char DIST_CORRECTION_X[] = "dist_correction_x";
 constexpr char DIST_CORRECTION_Y[] = "dist_correction_y";
 constexpr char VERT_OFFSET_CORRECTION[] = "vert_offset_correction";
@@ -83,8 +78,8 @@ constexpr char FOCAL_DISTANCE[] = "focal_distance";
 constexpr char FOCAL_SLOPE[] = "focal_slope";
 
 /** Read calibration for a single laser. */
-void operator>>(const YAML::Node & node, std::pair<int, LaserCorrection> & correction)
-{
+void operator>>(const YAML::Node &node,
+                std::pair<int, LaserCorrection> &correction) {
   node[LASER_ID] >> correction.first;
   node[ROT_CORRECTION] >> correction.second.rot_correction;
   node[VERT_CORRECTION] >> correction.second.vert_correction;
@@ -94,11 +89,11 @@ void operator>>(const YAML::Node & node, std::pair<int, LaserCorrection> & corre
 
   if (node[TWO_PT_CORRECTION_AVAILABLE]) {
     node[TWO_PT_CORRECTION_AVAILABLE] >>
-    correction.second.two_pt_correction_available;
+        correction.second.two_pt_correction_available;
   } else {
 #else
 
-  if (const YAML::Node * pName = node.FindValue(TWO_PT_CORRECTION_AVAILABLE)) {
+  if (const YAML::Node *pName = node.FindValue(TWO_PT_CORRECTION_AVAILABLE)) {
     *pName >> correction.second.two_pt_correction_available;
   } else {
 #endif
@@ -112,12 +107,11 @@ void operator>>(const YAML::Node & node, std::pair<int, LaserCorrection> & corre
 #ifdef HAVE_NEW_YAMLCPP
 
   if (node[HORIZ_OFFSET_CORRECTION]) {
-    node[HORIZ_OFFSET_CORRECTION] >>
-    correction.second.horiz_offset_correction;
+    node[HORIZ_OFFSET_CORRECTION] >> correction.second.horiz_offset_correction;
   } else {
 #else
 
-  if (const YAML::Node * pName = node.FindValue(HORIZ_OFFSET_CORRECTION)) {
+  if (const YAML::Node *pName = node.FindValue(HORIZ_OFFSET_CORRECTION)) {
     *pName >> correction.second.horiz_offset_correction;
   } else {
 #endif
@@ -134,7 +128,7 @@ void operator>>(const YAML::Node & node, std::pair<int, LaserCorrection> & corre
 
 #else
 
-  if (const YAML::Node * pName = node.FindValue(MAX_INTENSITY)) {
+  if (const YAML::Node *pName = node.FindValue(MAX_INTENSITY)) {
     *pName >> max_intensity_float;
   }
 
@@ -152,7 +146,7 @@ void operator>>(const YAML::Node & node, std::pair<int, LaserCorrection> & corre
 
 #else
 
-  if (const YAML::Node * pName = node.FindValue(MIN_INTENSITY)) {
+  if (const YAML::Node *pName = node.FindValue(MIN_INTENSITY)) {
     *pName >> min_intensity_float;
   }
 
@@ -165,25 +159,24 @@ void operator>>(const YAML::Node & node, std::pair<int, LaserCorrection> & corre
 
   // Calculate cached values
   correction.second.cos_rot_correction =
-    ::cosf(correction.second.rot_correction);
+      ::cosf(correction.second.rot_correction);
   correction.second.sin_rot_correction =
-    ::sinf(correction.second.rot_correction);
+      ::sinf(correction.second.rot_correction);
   correction.second.cos_vert_correction =
-    ::cosf(correction.second.vert_correction);
+      ::cosf(correction.second.vert_correction);
   correction.second.sin_vert_correction =
-    ::sinf(correction.second.vert_correction);
+      ::sinf(correction.second.vert_correction);
 
-  correction.second.laser_ring = 0;   // clear initially (set later)
+  correction.second.laser_ring = 0; // clear initially (set later)
 }
 
 /** Read entire calibration file. */
-void operator>>(const YAML::Node & node, Calibration & calibration)
-{
+void operator>>(const YAML::Node &node, Calibration &calibration) {
   int num_lasers;
   node[NUM_LASERS] >> num_lasers;
   float distance_resolution_m;
   node[DISTANCE_RESOLUTION] >> distance_resolution_m;
-  const YAML::Node & lasers = node[LASERS];
+  const YAML::Node &lasers = node[LASERS];
   calibration.laser_corrections.clear();
   calibration.num_lasers = num_lasers;
   calibration.distance_resolution_m = distance_resolution_m;
@@ -221,7 +214,7 @@ void operator>>(const YAML::Node & node, Calibration & calibration)
       }
     }
 
-    if (next_index < num_lasers) {  // anything found in this ring?
+    if (next_index < num_lasers) { // anything found in this ring?
       // store this ring number with its corresponding laser number
       calibration.laser_corrections[next_index].laser_ring = ring;
       next_angle = min_seen;
@@ -229,9 +222,8 @@ void operator>>(const YAML::Node & node, Calibration & calibration)
   }
 }
 
-Calibration::Calibration(const std::string & calibration_file)
-: distance_resolution_m(0.002f)
-{
+Calibration::Calibration(const std::string &calibration_file)
+    : distance_resolution_m(0.002f) {
   std::ifstream fin(calibration_file.c_str());
 
   if (!fin.is_open()) {
@@ -253,7 +245,7 @@ Calibration::Calibration(const std::string & calibration_file)
 
 #endif
     doc >> *this;
-  } catch (YAML::Exception & e) {
+  } catch (YAML::Exception &e) {
     fin.close();
     throw std::runtime_error("YAML Exception: " + std::string(e.what()));
   }
@@ -261,4 +253,4 @@ Calibration::Calibration(const std::string & calibration_file)
   fin.close();
 }
 
-}  // namespace velodyne_pointcloud
+} // namespace velodyne_pointcloud

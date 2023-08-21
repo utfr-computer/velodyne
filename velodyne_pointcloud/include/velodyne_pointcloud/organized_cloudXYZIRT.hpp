@@ -1,5 +1,5 @@
-// Copyright 2012, 2019 Austin Robot Technology, Jack O'Quin, Joshua Whitley, Sebastian Pütz  // NOLINT
-// All rights reserved.
+// Copyright 2012, 2019 Austin Robot Technology, Jack O'Quin, Joshua Whitley,
+// Sebastian Pütz  // NOLINT All rights reserved.
 //
 // Software License Agreement (BSD License 2.0)
 //
@@ -43,30 +43,31 @@
 
 #include "velodyne_pointcloud/datacontainerbase.hpp"
 
-namespace velodyne_pointcloud
-{
-class OrganizedCloudXYZIRT final
-  : public velodyne_rawdata::DataContainerBase
-{
+namespace velodyne_pointcloud {
+class OrganizedCloudXYZIRT final : public velodyne_rawdata::DataContainerBase {
 public:
-  OrganizedCloudXYZIRT(
-    const double min_range, const double max_range, const std::string & target_frame,
-    const std::string & fixed_frame, const unsigned int num_lasers,
-    const unsigned int scans_per_block, rclcpp::Clock::SharedPtr clock);
+  OrganizedCloudXYZIRT(const double min_range, const double max_range,
+                       const std::string &target_frame,
+                       const std::string &fixed_frame,
+                       const unsigned int num_lasers,
+                       const unsigned int scans_per_block,
+                       rclcpp::Clock::SharedPtr clock);
 
   void newLine() override;
 
-  void setup(const velodyne_msgs::msg::VelodyneScan::ConstSharedPtr scan_msg) override;
+  void setup(
+      const velodyne_msgs::msg::VelodyneScan::ConstSharedPtr scan_msg) override;
 
-  void addPoint(
-    float x, float y, float z, const uint16_t ring,
-    const float distance, const float intensity, const float time) override;
+  void addPoint(float x, float y, float z, const uint16_t ring,
+                const float distance, const float intensity,
+                const float time) override;
 
 private:
-  sensor_msgs::PointCloud2Iterator<float> iter_x_, iter_y_, iter_z_, iter_intensity_;
+  sensor_msgs::PointCloud2Iterator<float> iter_x_, iter_y_, iter_z_,
+      iter_intensity_;
   sensor_msgs::PointCloud2Iterator<uint16_t> iter_ring_;
   sensor_msgs::PointCloud2Iterator<float> iter_time_;
 };
-}  // namespace velodyne_pointcloud
+} // namespace velodyne_pointcloud
 
-#endif  // VELODYNE_POINTCLOUD__ORGANIZED_CLOUDXYZIRT_HPP_
+#endif // VELODYNE_POINTCLOUD__ORGANIZED_CLOUDXYZIRT_HPP_

@@ -38,21 +38,16 @@
 
 #include "velodyne_pointcloud/datacontainerbase.hpp"
 
-class TestContainer final
-  : public velodyne_rawdata::DataContainerBase
-{
+class TestContainer final : public velodyne_rawdata::DataContainerBase {
 public:
   TestContainer(unsigned int width, rclcpp::Clock::SharedPtr clock)
-  : velodyne_rawdata::DataContainerBase(
-      0, 0, "target", "fixed", width, 0, false, 0,
-      clock, 1, "x", 1, sensor_msgs::msg::PointField::FLOAT32)
-  {
-  }
+      : velodyne_rawdata::DataContainerBase(
+            0, 0, "target", "fixed", width, 0, false, 0, clock, 1, "x", 1,
+            sensor_msgs::msg::PointField::FLOAT32) {}
 
-  void addPoint(
-    float x, float y, float z, const uint16_t ring,
-    const float distance, const float intensity, const float time) override
-  {
+  void addPoint(float x, float y, float z, const uint16_t ring,
+                const float distance, const float intensity,
+                const float time) override {
     (void)x;
     (void)y;
     (void)z;
@@ -62,28 +57,16 @@ public:
     (void)time;
   }
 
-  void newLine() override
-  {
-  }
+  void newLine() override {}
 
-  uint32_t getCloudWidth()
-  {
-    return cloud.width;
-  }
+  uint32_t getCloudWidth() { return cloud.width; }
 
-  uint32_t getCloudPointStep()
-  {
-    return cloud.point_step;
-  }
+  uint32_t getCloudPointStep() { return cloud.point_step; }
 
-  uint32_t getCloudRowStep()
-  {
-    return cloud.row_step;
-  }
+  uint32_t getCloudRowStep() { return cloud.row_step; }
 };
 
-TEST(datacontainerbase, row_step_zero_width_constructor)
-{
+TEST(datacontainerbase, row_step_zero_width_constructor) {
   auto clock = std::make_shared<rclcpp::Clock>();
   TestContainer cont(0, clock);
   ASSERT_EQ(cont.getCloudWidth(), 0U);
@@ -91,8 +74,7 @@ TEST(datacontainerbase, row_step_zero_width_constructor)
   ASSERT_EQ(cont.getCloudRowStep(), 0U);
 }
 
-TEST(datacontainerbase, row_step_one_width_constructor)
-{
+TEST(datacontainerbase, row_step_one_width_constructor) {
   auto clock = std::make_shared<rclcpp::Clock>();
   TestContainer cont(1, clock);
   ASSERT_EQ(cont.getCloudWidth(), 1U);
@@ -100,8 +82,7 @@ TEST(datacontainerbase, row_step_one_width_constructor)
   ASSERT_EQ(cont.getCloudRowStep(), 4U);
 }
 
-TEST(datacontainerbase, row_step_one_width_after_setup)
-{
+TEST(datacontainerbase, row_step_one_width_after_setup) {
   auto clock = std::make_shared<rclcpp::Clock>();
   TestContainer cont(1, clock);
   auto msg = std::make_shared<velodyne_msgs::msg::VelodyneScan>();
@@ -112,8 +93,7 @@ TEST(datacontainerbase, row_step_one_width_after_setup)
 }
 
 // Run all the tests that were declared with TEST()
-int main(int argc, char ** argv)
-{
+int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
